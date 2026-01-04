@@ -12,4 +12,8 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
+use App\Http\Controllers\TaskController;
+
+Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+
 require __DIR__.'/auth.php';

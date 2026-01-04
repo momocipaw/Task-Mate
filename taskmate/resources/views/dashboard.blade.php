@@ -26,20 +26,45 @@
 
 <div class="flex">
     <!-- Sidebar -->
-    <aside class="w-64 bg-[#e9e9e9] min-h-[calc(100vh-56px)] px-6 py-8">
-        <nav class="space-y-5 text-sm">
-            <a class="flex items-center gap-3 text-sm">
-            <img src="{{ asset('icons/daftar_tugas.svg') }}" class="w-5 h-5">Daftar Tugas</a>
-            <a class="flex items-center gap-3 text-sm">
-            <img src="{{ asset('icons/tambah_tugas.svg') }}" class="w-5 h-5">Tambah Tugas</a>
-            <a class="flex items-center gap-3 text-sm">
-            <img src="{{ asset('icons/edit_tugas.svg') }}" class="w-5 h-5">Edit Tugas</a>
-            <a class="flex items-center gap-3 text-sm">
-            <img src="{{ asset('icons/trash.svg') }}" class="w-5 h-5">Trash</a>
-            <a class="flex items-center gap-3 text-sm">
-            <img src="{{ asset('icons/filter_tugas.svg') }}" class="w-5 h-5"> Filter Tugas</a>
-        </nav>
-    </aside>
+<aside class="w-64 bg-[#e9e9e9] min-h-[calc(100vh-56px)] px-6 py-8">
+    <nav class="space-y-5 text-sm">
+
+        <!-- Tambah Tugas -->
+        <button
+        onclick="openModal()"
+        class="flex items-center gap-3 text-sm w-full text-left
+           px-3 py-2 rounded-lg
+           transition-all duration-200 ease-in-out
+           hover:bg-white hover:shadow-sm hover:translate-x-1">
+    <img src="{{ asset('icons/tambah_tugas.svg') }}" class="w-5 h-5">
+    Tambah Tugas
+</button>
+
+        <!-- Edit Tugas -->
+        <button
+        onclick="openEditModal()"
+        class="flex items-center gap-3 text-sm w-full text-left
+           px-3 py-2 rounded-lg
+           transition-all duration-200 ease-in-out
+           hover:bg-white hover:shadow-sm hover:translate-x-1">
+            <img src="{{ asset('icons/edit_tugas.svg') }}" class="w-5 h-5">
+            Edit Tugas
+        </button>
+
+        <!-- Trash -->
+        <button
+    onclick="openTrashModal()"
+    class="flex items-center gap-3 text-sm w-full text-left
+           px-3 py-2 rounded-lg
+           transition-all duration-200
+           hover:bg-white hover:shadow-sm hover:translate-x-1">
+    <img src="{{ asset('icons/trash.svg') }}" class="w-5 h-5">
+    Trash
+</button>
+
+    </nav>
+</aside>
+
 
     <!-- Main Content -->
     <main class="flex-1 px-10 py-8">
@@ -110,7 +135,20 @@
                     <button class="bg-gray-200 px-3 py-1 rounded-full">Aktif</button>
                     <button class="bg-gray-200 px-3 py-1 rounded-full">Selesai</button>
                 </div>
-                <button class="bg-gray-900 text-white px-4 py-2 rounded-lg text-xs flex items-center gap-2">➕ Tambah Tugas</button>
+                <button
+        onclick="openModal()"
+         class="flex items-center gap-2
+           bg-gray-900 text-white
+           px-4 py-2 rounded-lg text-xs font-medium
+           transition-all duration-200 ease-in-out
+           hover:bg-white hover:text-gray-900
+           hover:shadow-sm hover:-translate-y-[1px]">
+
+    <img src="{{ asset('icons/tambah_tugas.svg') }}"
+         class="w-4 h-4 invert">
+
+    <span>Tambah Tugas</span>
+</button>
             </div>
 
             <!-- Empty State -->
@@ -121,12 +159,166 @@
 
         <!-- Footer -->
         <footer class="text-center text-xs text-gray-500 mt-10">
-            <span class="mx-3">Hubungi Kami</span>
-            <span class="mx-3">Kebijakan Privasi</span>
-            <span class="mx-3">Syarat dan Ketentuan</span>
+            <span class="mx-3">© 2026 TaskMate | TaskMate is a final project system developed for academic purposes. All rights reserved.</span>
         </footer>
     </main>
 </div>
+    <!-- ================= TASKMODAL ================= -->
+<div id="taskModal"
+     class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center">
+
+    <div class="bg-white w-[900px] h-[500px] rounded-3xl flex p-12 gap-16 relative">
+
+        <!-- CLOSE -->
+        <button onclick="closeModal()"
+                class="absolute top-6 right-6 text-xl text-gray-400 hover:text-black">
+            ✕
+        </button>
+
+        <!-- LEFT -->
+        <div class="flex-1">
+            <h2 class="text-4xl font-bold mb-4">Tambah Tugas</h2>
+            <p class="text-gray-500">Masukkan detail tugas baru Anda.</p>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="flex-1">
+            <form action="{{ route('tasks.store') }}" method="POST" class="space-y-5">
+                @csrf
+
+                <div>
+                    <label class="text-sm">Judul Tugas</label>
+                    <input type="text" name="title"
+                        class="w-full border rounded-lg px-4 py-2">
+                </div>
+
+                <div>
+                    <label class="text-sm">Deskripsi Tugas</label>
+                    <input type="text" name="description"
+                        class="w-full border rounded-lg px-4 py-2">
+                </div>
+
+                <div>
+                    <label class="text-sm">Tenggat</label>
+                    <input type="date" name="due_date"
+                        class="w-full border rounded-lg px-4 py-2">
+                </div>
+
+                <div class="flex gap-4 pt-6">
+                    <button type="button"
+                        onclick="closeModal()"
+                        class="border w-1/2 py-2 rounded-xl">
+                        Kembali
+                    </button>
+
+                    <button type="submit"
+                        class="bg-black text-white w-1/2 py-2 rounded-xl">
+                        Tambahkan Tugas
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= EDIT MODAL ================= -->
+<div id="editTaskModal"
+     class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center">
+
+    <div class="bg-white w-[900px] h-[500px] rounded-3xl flex p-12 gap-16 relative">
+
+        <button onclick="closeEditModal()"
+            class="absolute top-6 right-6 text-xl text-gray-400 hover:text-black">
+            ✕
+        </button>
+
+        <!-- LEFT -->
+        <div class="flex-1">
+            <h2 class="text-4xl font-bold mb-4">Edit Tugas</h2>
+            <p class="text-gray-500">Perbarui detail tugas Anda.</p>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="flex-1">
+            <form id="editForm" method="POST" class="space-y-5">
+                @csrf
+                @method('PUT')
+
+                <div>
+                    <label class="text-sm">Judul Tugas</label>
+                    <input type="text" id="editTitle" name="title"
+                        class="w-full border rounded-lg px-4 py-2">
+                </div>
+
+                <div>
+                    <label class="text-sm">Deskripsi</label>
+                    <input type="text" id="editDescription" name="description"
+                        class="w-full border rounded-lg px-4 py-2">
+                </div>
+
+                <div>
+                    <label class="text-sm">Tenggat</label>
+                    <input type="date" id="editDueDate" name="due_date"
+                        class="w-full border rounded-lg px-4 py-2">
+                </div>
+
+                <div class="flex gap-4 pt-6">
+                    <button type="button"
+                        onclick="closeEditModal()"
+                        class="border w-1/2 py-2 rounded-xl">
+                        Batal
+                    </button>
+
+                    <button type="submit"
+                        class="bg-black text-white w-1/2 py-2 rounded-xl">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+
+<!-- ================= JS ================= -->
+<script>
+    //TAMBAH TUGAS
+    const modal = document.getElementById('taskModal');
+
+    function openModal() {
+        modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+        modal.classList.add('hidden');
+    }
+
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+//EDIT TUGAS
+    function openEditModal(id, title, description, dueDate) {
+        const modal = document.getElementById('editTaskModal');
+
+        document.getElementById('editTitle').value = title;
+        document.getElementById('editDescription').value = description;
+        document.getElementById('editDueDate').value = dueDate;
+
+        document.getElementById('editForm').action = `/tasks/${id}`;
+
+        modal.classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+        document.getElementById('editTaskModal').classList.add('hidden');
+    }
+
+</script>
 
 </body>
 </html>
