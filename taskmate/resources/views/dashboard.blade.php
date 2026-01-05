@@ -19,7 +19,7 @@
         <span class="font-semibold text-lg">TaskMate</span>
     </div>
     <div class="text-sm flex gap-4">
-        <a href="#" class="hover:underline">Profile</a>
+        <a href="{{ route('profile') }}" class="hover:underline">Profile</a>
         <a href="#" class="hover:underline">Logout</a>
     </div>
 </header>
@@ -40,24 +40,13 @@
     Tambah Tugas
 </button>
 
-        <!-- Edit Tugas -->
-        <button
-        onclick="openEditModal()"
-        class="flex items-center gap-3 text-sm w-full text-left
-           px-3 py-2 rounded-lg
-           transition-all duration-200 ease-in-out
-           hover:bg-white hover:shadow-sm hover:translate-x-1">
-            <img src="{{ asset('icons/edit_tugas.svg') }}" class="w-5 h-5">
-            Edit Tugas
-        </button>
-
         <!-- Trash -->
-        <button
-    onclick="openTrashModal()"
-    class="flex items-center gap-3 text-sm w-full text-left
-           px-3 py-2 rounded-lg
-           transition-all duration-200
-           hover:bg-white hover:shadow-sm hover:translate-x-1">
+       <button
+ onclick="openTrashModal()"
+ class="flex items-center gap-3 text-sm w-full text-left
+        px-3 py-2 rounded-lg
+        transition-all duration-200
+        hover:bg-white hover:shadow-sm hover:translate-x-1">
     <img src="{{ asset('icons/trash.svg') }}" class="w-5 h-5">
     Trash
 </button>
@@ -67,7 +56,7 @@
 
 
     <!-- Main Content -->
-    <main class="flex-1 px-10 py-8">
+    <main class="flex-1 px-10 py-8 min-h-[calc(100vh-56px)] flex flex-col">
         <h1 class="text-2xl font-bold mb-6">Selamat Datang di TaskMate</h1>
 
         <!-- Top Cards -->
@@ -88,6 +77,26 @@
 </p>
 
             </div>
+
+            @php
+$upcomingTasks = [
+    [
+        'date_label' => 'Today December 5',
+        'title' => 'Prak. PBW',
+        'has_task' => true,
+    ],
+    [
+        'date_label' => 'Monday December 8',
+        'title' => null,
+        'has_task' => false,
+    ],
+    [
+        'date_label' => 'Tuesday December 9',
+        'title' => null,
+        'has_task' => false,
+    ],
+];
+@endphp
 
             <!-- Upcoming Task Card -->
             <div class="bg-white flex-1 rounded-3xl shadow px-6 py-5">
@@ -116,11 +125,11 @@
             <div class="grid grid-cols-3 gap-6 mb-4">
                 <div class="border rounded-xl px-4 py-3">
                     <p class="text-xs text-gray-500">Total Tugas</p>
-                    <p class="font-semibold text-sm">0</p>
+                    <p class="font-semibold text-sm">1</p>
                 </div>
                 <div class="border rounded-xl px-4 py-3">
                     <p class="text-xs text-gray-500">Belum Selesai</p>
-                    <p class="font-semibold text-sm text-orange-500">0</p>
+                    <p class="font-semibold text-sm text-orange-500">1</p>
                 </div>
                 <div class="border rounded-xl px-4 py-3">
                     <p class="text-xs text-gray-500">Selesai</p>
@@ -130,11 +139,34 @@
 
             <!-- Filter & Button -->
             <div class="flex justify-between items-center mb-6">
-                <div class="flex items-center gap-2 text-xs">
-                    <button class="bg-gray-900 text-white px-3 py-1 rounded-full">Semua</button>
-                    <button class="bg-gray-200 px-3 py-1 rounded-full">Aktif</button>
-                    <button class="bg-gray-200 px-3 py-1 rounded-full">Selesai</button>
-                </div>
+                <div id="filterTabs"
+     class="relative flex items-center bg-gray-200 rounded-full p-1 text-xs w-fit">
+
+    <!-- Indicator -->
+    <span id="tabIndicator"
+          class="absolute top-1 left-1 h-[28px] w-[64px]
+                 bg-gray-900 rounded-full
+                 transition-all duration-300 ease-in-out">
+    </span>
+
+    <button data-tab="all"
+        class="filter-btn relative z-10 px-4 py-1 rounded-full
+               text-white transition">
+        Semua
+    </button>
+
+    <button data-tab="active"
+        class="filter-btn relative z-10 px-4 py-1 rounded-full
+               text-gray-600 hover:text-gray-900 transition">
+        Aktif
+    </button>
+
+    <button data-tab="done"
+        class="filter-btn relative z-10 px-4 py-1 rounded-full
+               text-gray-600 hover:text-gray-900 transition">
+        Selesai
+    </button>
+</div>
                 <button
         onclick="openModal()"
          class="flex items-center gap-2
@@ -152,10 +184,56 @@
             </div>
 
             <!-- Empty State -->
-            <div class="border rounded-xl py-12 text-center text-gray-400 text-sm">
-                Belum ada tugas. Tambahkan tugas pertama Anda!
+            <div class="border rounded-2xl overflow-hidden">
+
+    <!-- TABLE HEADER -->
+    <div class="grid grid-cols-5 bg-gray-100 text-xs text-gray-500 px-6 py-3">
+        <span>Judul</span>
+        <span>Deskripsi</span>
+        <span>Tenggat</span>
+        <span>Status</span>
+        <span class="text-right">Aksi</span>
+    </div>
+
+    <!-- TABLE BODY -->
+    <div class="divide-y">
+
+        <!-- DUMMY ROW -->
+        <div class="grid grid-cols-5 items-center px-6 py-4 text-sm hover:bg-gray-50 transition">
+            <span class="font-medium">Prak. PBW</span>
+
+            <span class="text-gray-500 truncate">
+                Mengerjakan CRUD Laravel
+            </span>
+
+            <span class="text-gray-500">
+                15 Jan 2026
+            </span>
+
+            <span>
+                <span class="text-xs px-3 py-1 rounded-full bg-orange-100 text-orange-600">
+                    Aktif
+                </span>
+            </span>
+
+            <div class="flex justify-end gap-3">
+                <button
+                    onclick="openEditModal(1,'Prak. PBW','Mengerjakan CRUD Laravel','2026-01-15')"
+                    class="text-xs px-3 py-1 rounded-lg border hover:bg-black hover:text-white transition">
+                    Edit
+                </button>
+
+                <button
+                    class="text-xs px-3 py-1 rounded-lg border border-red-500 text-red-500
+                           hover:bg-red-500 hover:text-white transition">
+                    Hapus
+                </button>
             </div>
         </div>
+
+    </div>
+</div>
+
 
         <!-- Footer -->
         <footer class="text-center text-xs text-gray-500 mt-10">
@@ -163,7 +241,7 @@
         </footer>
     </main>
 </div>
-    <!-- ================= TASKMODAL ================= -->
+    <!-- ================= TASK MODAL ================= -->
 <div id="taskModal"
      class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center">
 
@@ -281,7 +359,80 @@
     </div>
 </div>
 
+<!-- ================= TRASH MODAL ================= -->
+<div id="trashModal"
+     class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center">
 
+    <div class="bg-white w-[900px] h-[520px] rounded-3xl p-10 relative">
+
+        <!-- CLOSE -->
+        <button onclick="closeTrashModal()"
+            class="absolute top-6 right-6 text-xl text-gray-400 hover:text-black">
+            ✕
+        </button>
+
+        <!-- HEADER -->
+        <div class="mb-6">
+            <h2 class="text-4xl font-bold mb-2">Trash</h2>
+            <p class="text-gray-500">
+                Riwayat tugas yang telah dihapus. Anda dapat memulihkan atau menghapus permanen.
+            </p>
+        </div>
+
+        <!-- TABLE HEADER -->
+        <div class="grid grid-cols-4 text-sm text-gray-500 border-b pb-3 mb-3">
+            <span>Judul</span>
+            <span>Deskripsi</span>
+            <span>Dihapus Pada</span>
+            <span class="text-right">Aksi</span>
+        </div>
+
+        <!-- TRASH LIST (DUMMY UI) -->
+        <div class="space-y-3 max-h-[280px] overflow-y-auto pr-2">
+
+            <!-- ITEM -->
+            <div class="grid grid-cols-4 items-center text-sm bg-gray-50 rounded-xl px-4 py-3">
+                <span class="font-medium">Prak. PBW</span>
+                <span class="text-gray-500 truncate">Mengerjakan CRUD Laravel</span>
+                <span class="text-gray-400">12 Jan 2026</span>
+
+                <div class="flex justify-end gap-3">
+                    <button
+                        class="px-3 py-1 text-xs rounded-lg border hover:bg-black hover:text-white transition">
+                        Restore
+                    </button>
+
+                    <button
+                        class="px-3 py-1 text-xs rounded-lg border border-red-500
+                               text-red-500 hover:bg-red-500 hover:text-white transition">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+            <!-- EMPTY STATE (nanti pakai kondisi) -->
+            <!--
+            <div class="text-center text-gray-400 py-16 text-sm">
+                Trash masih kosong.
+            </div>
+            -->
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="flex justify-between items-center mt-6">
+            <span class="text-xs text-gray-400">
+                Item di Trash akan terhapus otomatis setelah 30 hari.
+            </span>
+
+            <button
+                class="text-xs px-4 py-2 rounded-lg border hover:bg-gray-900 hover:text-white transition">
+                Hapus Semua
+            </button>
+        </div>
+
+    </div>
+</div>
 
 <!-- ================= JS ================= -->
 <script>
@@ -317,7 +468,36 @@
     function closeEditModal() {
         document.getElementById('editTaskModal').classList.add('hidden');
     }
+//TRASH
+    function openTrashModal() {
+        document.getElementById('trashModal').classList.remove('hidden');
+    }
 
+    function closeTrashModal() {
+        document.getElementById('trashModal').classList.add('hidden');
+    }
+
+    const buttons = document.querySelectorAll('.filter-btn');
+    const indicator = document.getElementById('tabIndicator');
+
+    buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            // Reset warna
+            buttons.forEach(b => {
+                b.classList.remove('text-white');
+                b.classList.add('text-gray-600');
+            });
+
+            // Aktifkan button
+            btn.classList.remove('text-gray-600');
+            btn.classList.add('text-white');
+
+            // Geser indicator
+            indicator.style.width = btn.offsetWidth + 'px';
+            indicator.style.transform =
+                `translateX(${btn.offsetLeft - 4}px)`;
+        });
+    });
 </script>
 
 </body>
