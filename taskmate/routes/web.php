@@ -8,9 +8,9 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
+Route::get('/profile', function () {
+    return view('profile');
+})->middleware('auth')->name('profile');
 
 use App\Http\Controllers\TaskController;
 
